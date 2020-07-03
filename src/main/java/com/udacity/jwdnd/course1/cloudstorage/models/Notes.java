@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Notes {
 
-    private Integer noteid;
-    private String notetitle;
+    private Integer noteId;
+    private String noteTitle;
     private String noteDescription;
     private Integer userId;
     

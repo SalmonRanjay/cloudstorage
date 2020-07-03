@@ -84,10 +84,21 @@ public class HomeController {
     }
 
     @PostMapping(value="/note")
-    public String createNote(@RequestParam("noteTitle") String title, @RequestParam("noteDescription") String description, Principal principal) {
-        Notes note = new Notes(null, title, description, null);
-        noteService.save(note, principal);
-
+    public String createNote( @RequestParam("noteId") String noteId, @RequestParam("noteTitle") String title, @RequestParam("noteDescription") String description, Principal principal) { 
+       
+        if(noteId.equals("") || noteId == null){
+            Notes note = new Notes(null, title, description, null);
+            noteService.save(note, principal);
+        }else{
+            Notes note = new Notes(Integer.parseInt(noteId), title, description, null);
+            noteService.updateNote(note);
+        }
+        return "redirect:/home";
+    }
+    
+    @GetMapping(value="/delete-note")
+    public String deleteNote(@RequestParam("id") String id) {
+        noteService.deleteNote(Integer.parseInt(id));
         return "redirect:/home";
     }
     

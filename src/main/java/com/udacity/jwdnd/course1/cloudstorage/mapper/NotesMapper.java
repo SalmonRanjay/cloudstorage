@@ -17,16 +17,16 @@ public interface NotesMapper {
     @Select("SELECT * FROM NOTES")
     public List<Notes> getNotes();
 
-    @Select("SELECT * FROM NOTES where noteid = #{id} ")
+    @Select("SELECT * FROM NOTES where noteId = #{id} ")
     public Notes getNoteById(Integer id);
 
-    @Insert("INSERT INTO NOTES (notetitle,noteDescription, userId ) VALUES(#{notetitle},#{noteDescription}, #{userId})")
+    @Insert("INSERT INTO NOTES (noteTitle,noteDescription, userId ) VALUES(#{noteTitle},#{noteDescription}, #{userId})")
     @Options(useGeneratedKeys = true, keyProperty = "userId")
     public int insert(Notes note);
 
-    @Delete("DELETE FROM NOTES where id= #{id}")
+    @Delete("DELETE FROM NOTES where noteId= #{id}")
     public int delete(Integer id);
 
-    @Update("UPDATE NOTES SET notetitle = #{title}, noteDescription = #{description} where noteid = #{id}")
+    @Update("UPDATE NOTES SET noteTitle = #{title}, noteDescription = #{description} where noteId = #{id}")
     public int updateNote(Integer id,String title, String description);
 }
