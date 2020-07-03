@@ -69,6 +69,16 @@ public class FileService {
 
     }
 
+    public Files findByFilename(String filename){
+        Files file = fileMapper.getFileByName(filename);
+        if(file == null)
+            throw new FileExistException("Cannot Find a File with name: " + filename);
+
+        file.setFiledata(decompressBytes(file.getFiledata()));
+
+        return file;
+    }
+
     // compress the image bytes before storing it in the database
     private byte[] compressBytes(byte[] data) {
         Deflater deflater = new Deflater();
