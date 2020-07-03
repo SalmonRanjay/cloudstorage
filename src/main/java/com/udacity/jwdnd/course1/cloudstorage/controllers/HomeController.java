@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.security.Principal;
 
 import com.udacity.jwdnd.course1.cloudstorage.exception.FileExistException;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +67,14 @@ public class HomeController {
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(file.getFiledata(), headers, HttpStatus.OK);
         return response;
     }
+
+    @GetMapping(value="/delete")
+    public String deleteFile(@RequestParam("filename") String filename, RedirectAttributes attributes) {
+        
+        fileService.delete(filename);
+        return "redirect:/home";
+    }
+    
 
     @ExceptionHandler({ FileExistException.class, UserNotFoundException.class})
     public String handleExceptions(FileExistException ex, RedirectAttributes attributes) {

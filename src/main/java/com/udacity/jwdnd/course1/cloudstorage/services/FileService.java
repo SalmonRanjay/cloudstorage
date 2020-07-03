@@ -79,6 +79,10 @@ public class FileService {
         return file;
     }
 
+    public void delete(String filename){
+      int result =  fileMapper.delete(filename);
+    }
+
     // compress the image bytes before storing it in the database
     private byte[] compressBytes(byte[] data) {
         Deflater deflater = new Deflater();
