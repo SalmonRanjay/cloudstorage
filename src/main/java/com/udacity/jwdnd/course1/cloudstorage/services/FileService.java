@@ -45,7 +45,7 @@ public class FileService {
 
         Files existingFile = fileMapper.getFileByName(filename);
 
-        if(file.getSize() == -1){
+        if(file.isEmpty()){
             throw new NullFileException("Sorry File missing");
         }
 

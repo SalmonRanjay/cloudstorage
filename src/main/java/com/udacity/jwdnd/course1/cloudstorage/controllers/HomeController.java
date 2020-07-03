@@ -66,8 +66,14 @@ public class HomeController {
         return response;
     }
 
-    @ExceptionHandler({ FileExistException.class, UserNotFoundException.class, NullFileException.class })
-    public String getSuperheroesUnavailable(FileExistException ex, RedirectAttributes attributes) {
+    @ExceptionHandler({ FileExistException.class, UserNotFoundException.class})
+    public String handleExceptions(FileExistException ex, RedirectAttributes attributes) {
+        attributes.addFlashAttribute("error", ex.getMessage());
+        return "redirect:/home";
+    }
+
+    @ExceptionHandler({ NullFileException.class })
+    public String handleNullFileException(FileExistException ex, RedirectAttributes attributes) {
         attributes.addFlashAttribute("error", ex.getMessage());
         return "redirect:/home";
     }
