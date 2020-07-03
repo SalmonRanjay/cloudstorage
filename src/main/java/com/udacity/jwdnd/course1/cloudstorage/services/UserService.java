@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import com.udacity.jwdnd.course1.cloudstorage.exception.UserNotFoundException;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.models.User;
 
@@ -33,6 +34,13 @@ public class UserService {
     }
 
     public User getUser(String username) {
-        return userMapper.getUser(username);
+
+
+        User user = userMapper.getUser(username);
+        if(user == null){
+            throw new UserNotFoundException("Unable To Retrieve User: "+ username);
+        }
+
+        return user;
     }
 }

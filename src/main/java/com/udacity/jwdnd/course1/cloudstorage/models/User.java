@@ -15,5 +15,10 @@ public class User {
     private String firstName;
     private String lastName;
 
+
+    public void setUserId(Integer userId){
+        this.userId = userId;
+    }
+
     
 }

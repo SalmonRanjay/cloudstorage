@@ -15,7 +15,7 @@ public class Notes {
     private Integer noteid;
     private String notetitle;
     private String noteDescription;
-    private Integer userid;
+    private Integer userId;
     
 }
 

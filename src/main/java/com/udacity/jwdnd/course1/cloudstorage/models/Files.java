@@ -17,6 +17,6 @@ public class Files {
     private String filename;
     private String contenttype;
     private String filesize;
-    private Integer userid;
-    private MultipartFile filedata;
+    private Integer userId;
+    private byte[] filedata;
 }
