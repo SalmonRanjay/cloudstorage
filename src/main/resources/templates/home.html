@@ -88,7 +88,9 @@
                             <tbody>
                                 <tr th:each="note : ${notes}">
                                     <td>
-                                        <button th:data-noteId="${note.noteId}" th:data-noteTitle="${note.noteTitle}"
+                                        <button 
+                                            th:data-noteId="${note.noteId}" 
+                                            th:data-noteTitle="${note.noteTitle}"
                                             th:data-noteDescription="${note.noteDescription}" type="button"
                                             onclick="showNoteModal('updateNote', this.getAttribute('data-noteId'), this.getAttribute('data-noteTitle'), this.getAttribute('data-noteDescription'))"
                                             class="btn btn-success">Edit
@@ -154,14 +156,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr th:each="credential : ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <button 
+                                            th:data-credId="${credential.credentialId}"
+                                            th:data-credUrl="${credential.url}" 
+                                            th:data-credPassword="${credential.password}"
+                                            th:data-credUsername="${credential.username}" 
+                                            onclick="showCredentialModal('updateCredential', this.getAttribute('data.credId') ,this.getAttribute('data-credUrl'), this.getAttribute('data-credUrl'), this.getAttribute('data-credUsername'), this.getAttribute('data.credPassword'))"
+                                            type="button" class="btn btn-success">Edit</button>
+                                        <a th:href="@{delete-creds(id=${credential.credentialId})}" class="btn btn-danger">Delete</a>
                                     </td>
-                                    <th scope="row">Example Credential URL</th>
-                                    <td>Example Credential Username</td>
-                                    <td>Example Credential Password</td>
+                                    <th th:text="${credential.url}" scope="row">Example Credential URL</th>
+                                    <td  th:text="${credential.username}">Example Credential Username</td>
+                                    <td th:text="${credential.password}">Example Credential Password</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -178,7 +186,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="#" method="POST">
+                                    <form th:action="@{/credentials}" method="POST">
                                         <input type="hidden" name="credentialId" id="credential-id">
                                         <div class="form-group">
                                             <label for="note-title" class="col-form-label">URL</label>
@@ -242,7 +250,9 @@
         // }
 
         // For opening the credentials modal
-        function showCredentialModal(credentialId, url, username, password) {
+        function showCredentialModal(formAction,credentialId, url, username, password) {
+            $('#credential-form').attr('action', formAction ? formAction : 'saveCredential');
+
             $('#credential-id').val(credentialId ? credentialId : '');
             $('#credential-url').val(url ? url : '');
             $('#credential-username').val(username ? username : '');

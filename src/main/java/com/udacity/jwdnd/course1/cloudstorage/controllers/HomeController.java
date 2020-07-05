@@ -9,6 +9,7 @@ import com.udacity.jwdnd.course1.cloudstorage.exception.NullFileException;
 import com.udacity.jwdnd.course1.cloudstorage.exception.UserNotFoundException;
 import com.udacity.jwdnd.course1.cloudstorage.models.Files;
 import com.udacity.jwdnd.course1.cloudstorage.models.Notes;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 
@@ -33,16 +34,26 @@ public class HomeController {
 
     private FileService fileService;
     private NoteService noteService;
+    private CredentialService credentialService;
 
-    public HomeController(FileService fileService, NoteService noteService) {
+    public HomeController(FileService fileService, NoteService noteService, CredentialService credentialService) {
         this.fileService = fileService;
         this.noteService = noteService;
+        this.credentialService = credentialService;
     }
+
+    @GetMapping(value="/result")
+    public String displayResult(Model model) {
+       
+        return "result";
+    }
+    
 
     @GetMapping(value = "/home")
     public String showHome(Model model) {
         model.addAttribute("files", fileService.fetchAll());
         model.addAttribute("notes", noteService.getAllNotes());
+        model.addAttribute("credentials", credentialService.getAllCredentials());
         return "home";
     }
 
@@ -80,11 +91,16 @@ public class HomeController {
     public String deleteFile(@RequestParam("filename") String filename, RedirectAttributes attributes) {
         
         fileService.delete(filename);
-        return "redirect:/home";
+        return "redirect:/result";
     }
 
     @PostMapping(value="/note")
-    public String createNote( @RequestParam("noteId") String noteId, @RequestParam("noteTitle") String title, @RequestParam("noteDescription") String description, Principal principal) { 
+    public String createNote( 
+            @RequestParam("noteId") String noteId, 
+            @RequestParam("noteTitle") String title, 
+            @RequestParam("noteDescription") String description, 
+            Principal principal,
+            RedirectAttributes attributes) { 
        
         if(noteId.equals("") || noteId == null){
             Notes note = new Notes(null, title, description, null);
@@ -93,27 +109,48 @@ public class HomeController {
             Notes note = new Notes(Integer.parseInt(noteId), title, description, null);
             noteService.updateNote(note);
         }
-        return "redirect:/home";
+        attributes.addFlashAttribute("success", true);
+        return "redirect:/result";
     }
     
     @GetMapping(value="/delete-note")
-    public String deleteNote(@RequestParam("id") String id) {
+    public String deleteNote(@RequestParam("id") String id, RedirectAttributes attributes) {
         noteService.deleteNote(Integer.parseInt(id));
-        return "redirect:/home";
+        attributes.addFlashAttribute("success", true);
+        return "redirect:/result";
+    }
+    
+
+    @PostMapping(value="/credentials")
+    public String createCredentail(
+            @RequestParam("url") String url, 
+            @RequestParam("username") String username,
+            @RequestParam("password") String password, 
+            @RequestParam("credentialId") String credentialId,
+            Principal principal, RedirectAttributes attributes ) {
+
+            if(credentialId.equals("") || credentialId == null)
+                credentialService.save(username, password, url, principal);
+            else
+                credentialService.updateCredential(Integer.parseInt(credentialId), url, password, username);
+        
+       
+        attributes.addFlashAttribute("success", true);
+        return "redirect:/result";
     }
     
     
 
-    @ExceptionHandler({ FileExistException.class, UserNotFoundException.class, GenericException.class})
+    @ExceptionHandler({ FileExistException.class, UserNotFoundException.class})
     public String handleExceptions(FileExistException ex, RedirectAttributes attributes) {
         attributes.addFlashAttribute("error", ex.getMessage());
         return "redirect:/home";
     }
 
-    @ExceptionHandler({ NullFileException.class })
+    @ExceptionHandler({ NullFileException.class,  GenericException.class })
     public String handleNullFileException(FileExistException ex, RedirectAttributes attributes) {
-        attributes.addFlashAttribute("error", ex.getMessage());
-        return "redirect:/home";
+        attributes.addFlashAttribute("error", true);
+        return "redirect:/result";
     }
 
 }
